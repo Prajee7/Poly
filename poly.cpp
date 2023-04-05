@@ -46,7 +46,7 @@ Poly::Poly(Poly &obj) {
 Poly::Poly(int coEff, int power) {
     this->size = power + 1;
     this->ptr = new int[this->size];
-    // initialize the coefficients to 0 before editing the coefficient of the power. 
+     // initialize the coefficients to 0 before editing the coefficient of the power. 
     for(int i = 0; i < this->size; i++) {
         this->ptr[i] = 0;
     }
@@ -69,7 +69,7 @@ Poly::~Poly() {
  * This method allows for other methods to set the coefficient given the power(AKA index).
 */
 void Poly::setCoeff(int coeff, int power) {
-    if (power < 0 || coeff == 0) { // check if power or coefficient is invalid.
+    if (power < 0 || coeff == 0) { 
         return; // exit method if invalid.
     }
     if (power >= this->size) { // check if array needs to be resized.
@@ -79,13 +79,13 @@ void Poly::setCoeff(int coeff, int power) {
             new_ptr[i] = this->ptr[i]; // copy existing coefficients to new array.
         }
         for (int i = this->size; i < new_size; i++) {
-            new_ptr[i] = 0; // initialize new coefficients to 0.
+            new_ptr[i] = 0; 
         }
-        delete[] ptr; // free memory from old array.
-        this->size = new_size; // update size of array.
-        this->ptr = new_ptr; // set pointer to new array.   
+        delete[] this->ptr; // free memory from old array.
+        this->size = new_size; 
+        this->ptr = new_ptr;
     }
-    this->ptr[power] = coeff; // set new coefficient at specified power.
+    this->ptr[power] = coeff;
 }
 
 /** Getters
@@ -149,7 +149,11 @@ Poly Poly::operator*(const Poly &rhs) const {
         for (int j = 0; j < rhs.size; j++) {
             if ((this->ptr[i] != 0) && (rhs.ptr[j] != 0)) {
                 int coeff = this->ptr[i] * rhs.ptr[j]; // multiply coefficients of different powers.
-                result.setCoeff(result.getCoeff(i+j) + coeff, i+j); // add the new coefficient to the result Poly object.
+                int currCoeff = 0;
+                if (i+j < result.size) {
+                    currCoeff = result.getCoeff(i+j);
+                }
+                result.setCoeff(currCoeff + coeff, i+j);
             }
         }
     }
@@ -238,13 +242,13 @@ ostream& operator<<(ostream& outStream, const Poly& obj) {
 
             if (i == obj.size - 1) { // print first term without a leading space
                 if (obj.ptr[i] >= 0) { // check sign of coefficient
-                    outStream << " +" << obj.ptr[i]; // print "+" sign before positive coefficient
+                    outStream << " +" << obj.ptr[i]; 
                 } else {
                     outStream << " " << obj.ptr[i]; 
                 }
             } else {
                 outStream << " "; 
-                if (obj.ptr[i] >= 0) { // check if index is greater than 0
+                if (obj.ptr[i] >= 0) { 
                     outStream << "+"; 
                 }
                 outStream << obj.ptr[i];
@@ -256,7 +260,6 @@ ostream& operator<<(ostream& outStream, const Poly& obj) {
             }
         }
     }
-
     if (empty) { // check if polynomial is all zeroes
         outStream << "0";    // print 0 if polynomial is all zeroes
     }
