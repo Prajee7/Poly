@@ -46,7 +46,7 @@ Poly::Poly(Poly &obj) {
 Poly::Poly(int coEff, int power) {
     this->size = power + 1;
     this->ptr = new int[this->size];
-     // initialize the coefficients to 0 before editing the coefficient of the power. 
+    // initialize the coefficients to 0 before editing the coefficient of the power. 
     for(int i = 0; i < this->size; i++) {
         this->ptr[i] = 0;
     }
@@ -199,15 +199,44 @@ Poly& Poly::operator=(const Poly &rhs) {
 
 // returns true if two polynomials are equal to each other, if not it returns false. 
 bool Poly::operator==(const Poly& rhs) const {
-    if (this->size != rhs.size) {
-        return false;
-    }
-    for (int i = 0; i < this->size; i++) {
-        if (this->ptr[i] != rhs.ptr[i]) {
-            return false;  // If the coefficients are different, the polynomials are not equal
+    if (size == rhs.size) { // checks if the sizes are equal, if so checks coefficients to see if they are too.
+        for (int i = size - 1; i >= 0; i--) {
+            if (ptr[i] != rhs.ptr[i]) {
+                return false;
+            }
         }
+        return true;
+    } else {
+        int start, end, diff;
+        const Poly* smaller;
+
+        if (size < rhs.size) { // determine which polynomial is small
+            start = size - 1; // sets the starting index of the loop
+            end = -1;
+            diff = -1; // setting the decrement value of the loop
+            smaller = this; // setting the smaller polynomial depending on size.
+        } else {
+            start = rhs.size - 1;
+            end = size - rhs.size - 1;
+            diff = -1;
+            smaller = &rhs;
+        }
+        // iterate through the polynomial from the highest degree to the lowest degree of the smaller polynomial.
+        for (int i = start; i > end; i--) { 
+            if (ptr[i] != smaller->ptr[i - size + smaller->size]) { // if the coefficients are not equal, return false.
+                return false;
+                return false;
+            }
+        }
+        // check if the coefficients of the larger polynomial are all zero from the highest degree of the 
+        //smaller polynomial to the lowest degree of the larger polynomial. if it is not a 0 it returns false.
+        for (int i = end; i >= 0; i--) {
+            if (ptr[i] != 0) {
+                return false;
+            }
+        }
+        return true;
     }
-    return true;
 }
 
 
@@ -263,6 +292,5 @@ ostream& operator<<(ostream& outStream, const Poly& obj) {
     if (empty) { // check if polynomial is all zeroes
         outStream << "0";    // print 0 if polynomial is all zeroes
     }
-
     return outStream;
 }
